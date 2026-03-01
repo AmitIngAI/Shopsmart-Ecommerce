@@ -92,4 +92,7 @@ coverage/
 # ========================================
 
 .vercel
-.netlify
+.netlify 
+# Application properties with passwords 
+**/application.properties 
+**/application.yml 
