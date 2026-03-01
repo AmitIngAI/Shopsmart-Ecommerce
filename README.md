@@ -1,4 +1,4 @@
-<div align="center">
+<img width="1907" height="932" alt="user profile" src="https://github.com/user-attachments/assets/4dcdbbac-bbab-4358-9717-50ec5f8815e1" /><div align="center">
 
 # 🛒 ShopSmart - Microservices E-Commerce Platform
 
@@ -310,18 +310,30 @@ ShopSmart is built using **12+ microservices** for modularity and scalability:
 | 🔧 **Git** | Latest | [Download](https://git-scm.com/downloads) |
 
 📸 Screenshots
-🏠 Homepage
-Homepage
-
-🛍️ Product Listing
-Product Listing
-
-🛒 Shopping Cart
-Cart
-
-💳 Checkout
-Checkout
-
+🏠 Eureka Dashboard :
+<img width="1901" height="925" alt="complete dashbord" src="https://github.com/user-attachments/assets/e59b60e1-fd07-4f18-8570-14f3aab84219" />
+<br>
+<br>
+🏠 Shopsmart Dashboard :
+<img width="1916" height="932" alt="Shopmart Dashboard" src="https://github.com/user-attachments/assets/eb7809b0-660b-4caa-87b3-91d657599155" />
+<br>
+<br>
+🛍️ Shopsmart Catogaries:
+<img width="1912" height="930" alt="shopmart catogories" src="https://github.com/user-attachments/assets/5b24db36-cacc-409d-bee2-c72ddf8943a2" />
+<br>
+<br>
+🛍️ Shopsmart All Products:
+<img width="1918" height="932" alt="all products" src="https://github.com/user-attachments/assets/fcdd8286-15a6-4439-85d8-eafcfe6318f2" />
+<br>
+<br>
+🛒 Sign in Page:
+<img width="1910" height="928" alt="sign in page" src="https://github.com/user-attachments/assets/ccba37f2-87a2-4059-a590-d2c365c1f649" />
+<br>
+<br>
+💳 User Profile Page :
+<img width="1907" height="932" alt="user profile" src="https://github.com/user-attachments/assets/42ac6237-3008-453d-a91f-5066332fbce8" />
+<br>
+<br>
 ⚡ Performance & Scalability
 Performance Metrics
 Metric	Value
