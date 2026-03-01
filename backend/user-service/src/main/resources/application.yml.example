@@ -3,7 +3,7 @@ spring:
     name: user-service
   data:
     mongodb:
-      uri: mongodb+srv://shopmart_01:XiaCTF3cUNbmbyDc@cluster1.a8kvqvy.mongodb.net/userdb?retryWrites=true&w=majority
+      uri: PASTE_YOUR_MONGO-DB_URL
       database: userdb
 
 server:
