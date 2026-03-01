@@ -1,4 +1,4 @@
-<img width="1907" height="932" alt="user profile" src="https://github.com/user-attachments/assets/4dcdbbac-bbab-4358-9717-50ec5f8815e1" /><div align="center">
+<div align="center">
 
 # 🛒 ShopSmart - Microservices E-Commerce Platform
 
