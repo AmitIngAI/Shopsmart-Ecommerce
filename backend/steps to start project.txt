@@ -1,0 +1,14 @@
+1..eureka server
+2..user sesrvice
+3..product service
+4..order service
+5..api gateway
+
+with this : mvnw.cmd spring-boot:run
+
+
+next : cd C:\Users\HAKKA\Desktop\ShopSmart-Microservices\frontend\shopsmart-ui 
+       npm start
+
+
+     mongodb+srv://shopmart_01:XiaCTF3cUNbmbyDc@cluster1.a8kvqvy.mongodb.net/productdb?retryWrites=true&w=majority
