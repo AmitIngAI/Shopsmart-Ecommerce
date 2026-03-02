@@ -1,36 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { 
   HeartIcon, 
-  ShoppingBagIcon, 
-  EyeIcon,
-  StarIcon,
-  BoltIcon
-} from '@heroicons/react/24/solid';
-import { HeartIcon as HeartOutline } from '@heroicons/react/24/outline';
+  ShoppingCartIcon,
+  StarIcon 
+} from '@heroicons/react/24/outline';
+import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import useStore from '../../store/store';
 import toast from 'react-hot-toast';
 
-const ProductCard = ({ product, index = 0 }) => {
-  const { addToCart, wishlist, addToWishlist, removeFromWishlist } = useStore();
-  const [isHovered, setIsHovered] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
+const ProductCard = ({ product, index = 0, isMobile = false, compact = false }) => {
+  const navigate = useNavigate();
+  const { cart, wishlist, addToCart, addToWishlist, removeFromWishlist } = useStore();
   
-  const isInWishlist = wishlist?.some(item => item.id === product.id) || false;
+  const isInCart = cart.some(item => item.id === product.id);
+  const isInWishlist = wishlist.some(item => item.id === product.id);
 
+  // Handle product click - Navigate to details
+  const handleProductClick = (e) => {
+    // Don't navigate if clicking on buttons
+    if (e.target.closest('button')) return;
+    navigate(`/product/${product.id}`);
+  };
+
+  // Handle add to cart
   const handleAddToCart = (e) => {
     e.stopPropagation();
     addToCart(product);
-    toast.success('Added to cart!', {
-      icon: '🛒',
+    toast.success(`${product.name.slice(0, 20)}... added to cart! 🛒`, {
+      duration: 2000,
       style: {
-        background: '#1e1e1e',
+        background: '#4CAF50',
         color: '#fff',
-        border: '1px solid rgba(255,107,53,0.3)'
+        fontSize: isMobile ? '12px' : '14px'
       }
     });
   };
 
+  // Handle wishlist
   const handleWishlist = (e) => {
     e.stopPropagation();
     if (isInWishlist) {
@@ -38,222 +46,303 @@ const ProductCard = ({ product, index = 0 }) => {
       toast.success('Removed from wishlist');
     } else {
       addToWishlist(product);
-      toast.success('Added to wishlist!', { icon: '❤️' });
+      toast.success('Added to wishlist! ❤️');
     }
   };
 
+  // Compact card for mobile horizontal scroll
+  if (compact) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: index * 0.05 }}
+        onClick={handleProductClick}
+        style={{
+          background: 'linear-gradient(145deg, #1e1e1e 0%, #151515 100%)',
+          borderRadius: '12px',
+          overflow: 'hidden',
+          cursor: 'pointer',
+          border: '1px solid rgba(255,255,255,0.05)',
+          height: '100%'
+        }}
+      >
+        {/* Discount Badge */}
+        {product.discount > 0 && (
+          <div style={{
+            position: 'absolute',
+            top: '8px',
+            left: '8px',
+            background: '#ff4444',
+            color: '#fff',
+            padding: '3px 8px',
+            borderRadius: '4px',
+            fontSize: '10px',
+            fontWeight: '700',
+            zIndex: 2
+          }}>
+            {product.discount}% OFF
+          </div>
+        )}
+
+        {/* Image */}
+        <div style={{
+          height: '120px',
+          background: '#252525',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative'
+        }}>
+          <img
+            src={product.image}
+            alt={product.name}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'contain',
+              padding: '8px'
+            }}
+            onError={(e) => {
+              e.target.src = 'https://via.placeholder.com/150x120/1e1e1e/ff6b35?text=Product';
+            }}
+          />
+          
+          {/* Quick Wishlist */}
+          <button
+            onClick={handleWishlist}
+            style={{
+              position: 'absolute',
+              top: '8px',
+              right: '8px',
+              background: 'rgba(0,0,0,0.5)',
+              border: 'none',
+              borderRadius: '50%',
+              width: '28px',
+              height: '28px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer'
+            }}
+          >
+            {isInWishlist ? (
+              <HeartIconSolid style={{ width: '14px', height: '14px', color: '#ff4444' }} />
+            ) : (
+              <HeartIcon style={{ width: '14px', height: '14px', color: '#fff' }} />
+            )}
+          </button>
+        </div>
+
+        {/* Info */}
+        <div style={{ padding: '10px' }}>
+          <p style={{
+            fontSize: '11px',
+            color: '#888',
+            marginBottom: '4px'
+          }}>
+            {product.brand}
+          </p>
+          <h3 style={{
+            fontSize: '12px',
+            fontWeight: '500',
+            color: '#fff',
+            marginBottom: '6px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
+          }}>
+            {product.name}
+          </h3>
+          
+          {/* Rating */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
+            marginBottom: '6px'
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '2px',
+              background: '#388e3c',
+              padding: '2px 6px',
+              borderRadius: '3px'
+            }}>
+              <span style={{ fontSize: '10px', color: '#fff', fontWeight: '600' }}>
+                {product.rating}
+              </span>
+              <StarIcon style={{ width: '10px', height: '10px', color: '#fff', fill: '#fff' }} />
+            </div>
+          </div>
+
+          {/* Price */}
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '14px', fontWeight: '700', color: '#fff' }}>
+              ₹{product.price?.toLocaleString('en-IN')}
+            </span>
+            {product.mrp > product.price && (
+              <span style={{
+                fontSize: '10px',
+                color: '#888',
+                textDecoration: 'line-through'
+              }}>
+                ₹{product.mrp?.toLocaleString('en-IN')}
+              </span>
+            )}
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
+
+  // Full card
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1 }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.05 }}
+      whileHover={{ y: isMobile ? 0 : -8 }}
+      onClick={handleProductClick}
       style={{
         background: 'linear-gradient(145deg, #1e1e1e 0%, #151515 100%)',
-        borderRadius: '24px',
+        borderRadius: isMobile ? '12px' : '16px',
         overflow: 'hidden',
-        position: 'relative',
         cursor: 'pointer',
         border: '1px solid rgba(255,255,255,0.05)',
-        transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-        transform: isHovered ? 'translateY(-10px)' : 'translateY(0)',
-        boxShadow: isHovered 
-          ? '0 30px 60px rgba(0,0,0,0.5), 0 0 40px rgba(255,107,53,0.1)' 
-          : '0 10px 30px rgba(0,0,0,0.3)'
+        transition: 'all 0.3s ease',
+        position: 'relative'
       }}
     >
       {/* Discount Badge */}
       {product.discount > 0 && (
-        <motion.div
-          initial={{ x: -50 }}
-          animate={{ x: 0 }}
-          style={{
-            position: 'absolute',
-            top: '16px',
-            left: '16px',
-            background: 'var(--gradient-primary)',
-            padding: '6px 12px',
-            borderRadius: '8px',
-            zIndex: 10,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px'
-          }}
-        >
-          <BoltIcon style={{ width: '12px', height: '12px', color: '#fff' }} />
-          <span style={{ color: '#fff', fontSize: '12px', fontWeight: '700' }}>
-            {product.discount}% OFF
-          </span>
-        </motion.div>
+        <div style={{
+          position: 'absolute',
+          top: isMobile ? '8px' : '12px',
+          left: isMobile ? '8px' : '12px',
+          background: 'linear-gradient(135deg, #ff4444 0%, #cc0000 100%)',
+          color: '#fff',
+          padding: isMobile ? '4px 8px' : '6px 12px',
+          borderRadius: '6px',
+          fontSize: isMobile ? '10px' : '12px',
+          fontWeight: '700',
+          zIndex: 2,
+          boxShadow: '0 2px 8px rgba(255,68,68,0.3)'
+        }}>
+          {product.discount}% OFF
+        </div>
       )}
 
-      {/* Action Buttons */}
-      <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : 20 }}
-        style={{
+      {/* Tag Badge */}
+      {product.tag && (
+        <div style={{
           position: 'absolute',
-          top: '16px',
-          right: '16px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '10px',
-          zIndex: 10
-        }}
-      >
-        <motion.button
-          whileHover={{ scale: 1.15 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={handleWishlist}
-          style={{
-            width: '44px',
-            height: '44px',
-            borderRadius: '12px',
-            border: 'none',
-            background: isInWishlist 
-              ? 'linear-gradient(135deg, #ff4757 0%, #ff6b81 100%)' 
-              : 'rgba(255,255,255,0.1)',
-            backdropFilter: 'blur(10px)',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          {isInWishlist ? (
-            <HeartIcon style={{ width: '20px', height: '20px', color: '#fff' }} />
-          ) : (
-            <HeartOutline style={{ width: '20px', height: '20px', color: '#fff' }} />
-          )}
-        </motion.button>
+          top: isMobile ? '8px' : '12px',
+          right: isMobile ? '8px' : '12px',
+          background: 'rgba(255,107,53,0.9)',
+          color: '#fff',
+          padding: isMobile ? '4px 8px' : '6px 12px',
+          borderRadius: '6px',
+          fontSize: isMobile ? '9px' : '11px',
+          fontWeight: '600',
+          zIndex: 2
+        }}>
+          {product.tag}
+        </div>
+      )}
 
-        <motion.button
-          whileHover={{ scale: 1.15 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => toast.success('Quick view coming soon!')}
-          style={{
-            width: '44px',
-            height: '44px',
-            borderRadius: '12px',
-            border: 'none',
-            background: 'rgba(255,255,255,0.1)',
-            backdropFilter: 'blur(10px)',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          <EyeIcon style={{ width: '20px', height: '20px', color: '#fff' }} />
-        </motion.button>
-      </motion.div>
-
-      {/* Image */}
+      {/* Image Container */}
       <div style={{
-        height: '240px',
-        background: 'linear-gradient(145deg, #252525 0%, #1a1a1a 100%)',
+        height: isMobile ? '140px' : '200px',
+        background: '#252525',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '30px',
         position: 'relative',
         overflow: 'hidden'
       }}>
-        {/* Glow Effect */}
-        <motion.div
-          animate={{
-            scale: isHovered ? 1.5 : 1,
-            opacity: isHovered ? 0.3 : 0
-          }}
-          style={{
-            position: 'absolute',
-            width: '150px',
-            height: '150px',
-            background: 'radial-gradient(circle, rgba(255,107,53,0.5) 0%, transparent 70%)',
-            borderRadius: '50%',
-            filter: 'blur(30px)'
-          }}
-        />
-
-        {!imageLoaded && (
-          <div style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'linear-gradient(90deg, #252525 25%, #2d2d2d 50%, #252525 75%)',
-            backgroundSize: '200% 100%',
-            animation: 'shimmer 1.5s infinite'
-          }} />
-        )}
-
         <motion.img
           src={product.image}
           alt={product.name}
-          onLoad={() => setImageLoaded(true)}
-          animate={{ 
-            scale: isHovered ? 1.1 : 1,
-            rotate: isHovered ? 2 : 0
-          }}
-          transition={{ duration: 0.4 }}
+          whileHover={{ scale: 1.1 }}
+          transition={{ duration: 0.3 }}
           style={{
-            maxWidth: '100%',
-            maxHeight: '100%',
+            width: '100%',
+            height: '100%',
             objectFit: 'contain',
-            filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.3))',
-            opacity: imageLoaded ? 1 : 0
+            padding: isMobile ? '12px' : '20px'
           }}
           onError={(e) => {
-            e.target.src = 'https://via.placeholder.com/200x200/1e1e1e/ff6b35?text=Product';
+            e.target.src = 'https://via.placeholder.com/280x200/1e1e1e/ff6b35?text=Product';
           }}
         />
+
+        {/* Wishlist Button */}
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={handleWishlist}
+          style={{
+            position: 'absolute',
+            bottom: isMobile ? '8px' : '12px',
+            right: isMobile ? '8px' : '12px',
+            background: 'rgba(0,0,0,0.7)',
+            backdropFilter: 'blur(4px)',
+            border: 'none',
+            borderRadius: '50%',
+            width: isMobile ? '32px' : '40px',
+            height: isMobile ? '32px' : '40px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            zIndex: 3
+          }}
+        >
+          {isInWishlist ? (
+            <HeartIconSolid style={{ 
+              width: isMobile ? '16px' : '20px', 
+              height: isMobile ? '16px' : '20px', 
+              color: '#ff4444' 
+            }} />
+          ) : (
+            <HeartIcon style={{ 
+              width: isMobile ? '16px' : '20px', 
+              height: isMobile ? '16px' : '20px', 
+              color: '#fff' 
+            }} />
+          )}
+        </motion.button>
       </div>
 
-      {/* Content */}
-      <div style={{ padding: '24px' }}>
-        {/* Brand & Category */}
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          marginBottom: '10px'
+      {/* Product Info */}
+      <div style={{ 
+        padding: isMobile ? '12px' : '20px' 
+      }}>
+        {/* Brand */}
+        <p style={{
+          fontSize: isMobile ? '11px' : '12px',
+          color: '#888',
+          marginBottom: isMobile ? '4px' : '6px',
+          fontWeight: '500',
+          textTransform: 'uppercase',
+          letterSpacing: '0.5px'
         }}>
-          <span style={{
-            color: 'var(--primary)',
-            fontSize: '12px',
-            fontWeight: '600',
-            textTransform: 'uppercase',
-            letterSpacing: '1px'
-          }}>
-            {product.brand}
-          </span>
-          {product.tag && (
-            <span style={{
-              background: 'rgba(0,212,170,0.15)',
-              color: '#00d4aa',
-              padding: '4px 10px',
-              borderRadius: '20px',
-              fontSize: '10px',
-              fontWeight: '600',
-              textTransform: 'uppercase'
-            }}>
-              {product.tag}
-            </span>
-          )}
-        </div>
+          {product.brand}
+        </p>
 
-        {/* Title */}
+        {/* Name */}
         <h3 style={{
-          fontSize: '16px',
+          fontSize: isMobile ? '13px' : '16px',
           fontWeight: '600',
           color: '#fff',
-          marginBottom: '12px',
-          lineHeight: '1.4',
+          marginBottom: isMobile ? '8px' : '12px',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
-          display: '-webkit-box',
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: 'vertical',
-          minHeight: '44px'
+          whiteSpace: 'nowrap',
+          lineHeight: 1.3
         }}>
           {product.name}
         </h3>
@@ -262,24 +351,36 @@ const ProductCard = ({ product, index = 0 }) => {
         <div style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
-          marginBottom: '16px'
+          gap: isMobile ? '6px' : '8px',
+          marginBottom: isMobile ? '10px' : '14px'
         }}>
           <div style={{
             display: 'flex',
             alignItems: 'center',
             gap: '4px',
-            background: 'linear-gradient(135deg, #ffd93d 0%, #f7931e 100%)',
-            padding: '4px 10px',
-            borderRadius: '8px'
+            background: '#388e3c',
+            padding: isMobile ? '3px 8px' : '4px 10px',
+            borderRadius: '4px'
           }}>
-            <StarIcon style={{ width: '12px', height: '12px', color: '#000' }} />
-            <span style={{ color: '#000', fontSize: '12px', fontWeight: '700' }}>
+            <span style={{ 
+              fontSize: isMobile ? '11px' : '13px', 
+              fontWeight: '700', 
+              color: '#fff' 
+            }}>
               {product.rating}
             </span>
+            <StarIcon style={{ 
+              width: isMobile ? '10px' : '12px', 
+              height: isMobile ? '10px' : '12px', 
+              color: '#fff',
+              fill: '#fff'
+            }} />
           </div>
-          <span style={{ color: 'var(--text-muted)', fontSize: '12px' }}>
-            ({product.reviews?.toLocaleString()} reviews)
+          <span style={{ 
+            fontSize: isMobile ? '11px' : '13px', 
+            color: '#888' 
+          }}>
+            ({product.reviews?.toLocaleString()})
           </span>
         </div>
 
@@ -287,66 +388,83 @@ const ProductCard = ({ product, index = 0 }) => {
         <div style={{
           display: 'flex',
           alignItems: 'baseline',
-          gap: '10px',
-          marginBottom: '20px'
+          gap: isMobile ? '6px' : '10px',
+          marginBottom: isMobile ? '12px' : '16px',
+          flexWrap: 'wrap'
         }}>
-          <span style={{
-            fontSize: '26px',
-            fontWeight: '800',
-            background: 'var(--gradient-primary)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
+          <span style={{ 
+            fontSize: isMobile ? '18px' : '22px', 
+            fontWeight: '800', 
+            color: '#fff' 
           }}>
             ₹{product.price?.toLocaleString('en-IN')}
           </span>
-          {product.mrp && (
-            <span style={{
-              fontSize: '14px',
-              color: 'var(--text-muted)',
-              textDecoration: 'line-through'
-            }}>
-              ₹{product.mrp?.toLocaleString('en-IN')}
-            </span>
+          {product.mrp && product.mrp > product.price && (
+            <>
+              <span style={{
+                fontSize: isMobile ? '12px' : '14px',
+                color: '#888',
+                textDecoration: 'line-through'
+              }}>
+                ₹{product.mrp?.toLocaleString('en-IN')}
+              </span>
+              <span style={{ 
+                fontSize: isMobile ? '11px' : '13px', 
+                color: '#00d4aa', 
+                fontWeight: '600' 
+              }}>
+                {product.discount}% off
+              </span>
+            </>
           )}
         </div>
+
+        {/* Stock Warning */}
+        {product.stock && product.stock <= 10 && (
+          <div style={{
+            fontSize: isMobile ? '10px' : '12px',
+            color: '#ff9800',
+            marginBottom: isMobile ? '10px' : '12px',
+            fontWeight: '500'
+          }}>
+            ⚡ Only {product.stock} left!
+          </div>
+        )}
 
         {/* Add to Cart Button */}
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={handleAddToCart}
+          disabled={isInCart}
           style={{
             width: '100%',
-            background: isHovered 
-              ? 'var(--gradient-primary)' 
-              : 'rgba(255,255,255,0.08)',
-            border: isHovered ? 'none' : '1px solid rgba(255,255,255,0.1)',
-            borderRadius: '14px',
-            padding: '14px',
+            padding: isMobile ? '10px' : '14px',
+            background: isInCart 
+              ? 'linear-gradient(135deg, #388e3c 0%, #2e7d32 100%)'
+              : 'linear-gradient(135deg, #ff6b35 0%, #f7931e 100%)',
+            border: 'none',
+            borderRadius: isMobile ? '8px' : '10px',
             color: '#fff',
-            fontWeight: '600',
-            fontSize: '14px',
-            cursor: 'pointer',
+            fontSize: isMobile ? '12px' : '14px',
+            fontWeight: '700',
+            cursor: isInCart ? 'default' : 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: '10px',
-            transition: 'all 0.3s',
-            boxShadow: isHovered ? '0 10px 30px rgba(255,107,53,0.3)' : 'none'
+            gap: '8px',
+            boxShadow: isInCart 
+              ? '0 4px 15px rgba(56,142,60,0.3)'
+              : '0 4px 15px rgba(255,107,53,0.3)'
           }}
         >
-          <ShoppingBagIcon style={{ width: '18px', height: '18px' }} />
-          Add to Cart
+          <ShoppingCartIcon style={{ 
+            width: isMobile ? '14px' : '18px', 
+            height: isMobile ? '14px' : '18px' 
+          }} />
+          {isInCart ? 'ADDED ✓' : 'ADD TO CART'}
         </motion.button>
       </div>
-
-      {/* Shimmer Animation */}
-      <style>{`
-        @keyframes shimmer {
-          0% { background-position: -200% 0; }
-          100% { background-position: 200% 0; }
-        }
-      `}</style>
     </motion.div>
   );
 };

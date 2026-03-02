@@ -3,13 +3,15 @@ import api from './api';
 const PRODUCT_API = '/products';
 
 export const productService = {
-  // Get all products with filters
-  getAllProducts: async (params = {}) => {
+  // Get all products - SILENT (no toast on error)
+  getAllProducts: async () => {
     try {
-      const response = await api.get(PRODUCT_API, { params });
+      const response = await api.get(PRODUCT_API);
       return response.data;
     } catch (error) {
-      throw error.response?.data || error.message;
+      // ❌ NO TOAST - just throw error silently
+      console.log('📦 Backend not available, using local data');
+      throw error;
     }
   },
 
@@ -19,7 +21,8 @@ export const productService = {
       const response = await api.get(`${PRODUCT_API}/${id}`);
       return response.data;
     } catch (error) {
-      throw error.response?.data || error.message;
+      console.log('📦 Product not found in backend');
+      throw error;
     }
   },
 
@@ -31,7 +34,8 @@ export const productService = {
       });
       return response.data;
     } catch (error) {
-      throw error.response?.data || error.message;
+      console.log('🔍 Search failed, using local search');
+      throw error;
     }
   },
 
@@ -41,7 +45,8 @@ export const productService = {
       const response = await api.get(`${PRODUCT_API}/category/${category}`);
       return response.data;
     } catch (error) {
-      throw error.response?.data || error.message;
+      console.log('📂 Category fetch failed');
+      throw error;
     }
   },
 
@@ -51,27 +56,30 @@ export const productService = {
       const response = await api.get(`${PRODUCT_API}/featured`);
       return response.data;
     } catch (error) {
-      throw error.response?.data || error.message;
+      console.log('⭐ Featured fetch failed');
+      throw error;
     }
   },
 
-  // Get product reviews
-  getProductReviews: async (productId) => {
+  // Get deals
+  getDeals: async () => {
     try {
-      const response = await api.get(`${PRODUCT_API}/${productId}/reviews`);
+      const response = await api.get(`${PRODUCT_API}/deals`);
       return response.data;
     } catch (error) {
-      throw error.response?.data || error.message;
+      console.log('🔥 Deals fetch failed');
+      throw error;
     }
   },
 
-  // Add product review
-  addProductReview: async (productId, reviewData) => {
+  // Get products by tag
+  getProductsByTag: async (tag) => {
     try {
-      const response = await api.post(`${PRODUCT_API}/${productId}/reviews`, reviewData);
+      const response = await api.get(`${PRODUCT_API}/tag/${tag}`);
       return response.data;
     } catch (error) {
-      throw error.response?.data || error.message;
+      console.log('🏷️ Tag fetch failed');
+      throw error;
     }
   }
 };

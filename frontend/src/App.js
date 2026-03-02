@@ -1,4 +1,3 @@
-// src/App.js
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
@@ -15,7 +14,7 @@ import Checkout from './pages/Checkout';
 import OrderSuccess from './pages/OrderSuccess';
 import Auth from './pages/Auth';
 import Category from './pages/Category';
-import UserDashboard from './pages/UserDashboard'; // NEW
+import UserDashboard from './pages/UserDashboard'; 
 import CartSidebar from './components/cart/CartSidebar';
 
 // Top Loading Bar Component
