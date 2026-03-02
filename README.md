@@ -15,7 +15,7 @@
 [![Kafka](https://img.shields.io/badge/Apache_Kafka-3.0-231F20?style=for-the-badge&logo=apache-kafka&logoColor=white)](https://kafka.apache.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
-**[Live Demo]() 
+**[Live Demo](https://shopssmart-ecommerce.vercel.app/)** 
 
 </div>
 
