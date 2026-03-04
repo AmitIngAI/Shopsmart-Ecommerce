@@ -335,6 +335,8 @@ ShopSmart is built using **12+ microservices** for modularity and scalability:
 <img width="1907" height="932" alt="user profile" src="https://github.com/user-attachments/assets/42ac6237-3008-453d-a91f-5066332fbce8" />
 <br>
 <br>
+
+```
 ⚡ Performance & Scalability
 Performance Metrics
 Metric	Value
@@ -354,6 +356,7 @@ Uptime	99.9%
 ✅ CORS Configuration
 ✅ HTTPS/TLS Encryption
 
+```
 📄 License
 This project is licensed under the MIT License - see the LICENSE file.
 
