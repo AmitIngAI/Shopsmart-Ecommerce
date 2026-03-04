@@ -137,8 +137,8 @@ ShopSmart leverages microservices to provide:
 - Sales analytics
 - Payment settlements
 
----
 
+```
 ## 🏗️ Microservices Architecture
 
 ShopSmart is built using **12+ microservices** for modularity and scalability:
@@ -309,6 +309,7 @@ ShopSmart is built using **12+ microservices** for modularity and scalability:
 | 🐋 **Docker** | 24+ | [Download](https://www.docker.com/products/docker-desktop) |
 | 🔧 **Git** | Latest | [Download](https://git-scm.com/downloads) |
 
+```
 📸 Screenshots
 🏠 Eureka Dashboard :
 <img width="1901" height="925" alt="complete dashbord" src="https://github.com/user-attachments/assets/e59b60e1-fd07-4f18-8570-14f3aab84219" />
